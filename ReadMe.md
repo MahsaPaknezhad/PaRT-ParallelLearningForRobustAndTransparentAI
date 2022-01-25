@@ -110,6 +110,11 @@ bash -i run5TasksParallel.sh ../../scripts/test_case0_5tasks_parallel.json
 
 To run the experiment for other seeds, simply change the value of test_case in test_case0_5tasks_parallel.json to 1,2,3, or 4.
 
+# Paper
+Please cite our paper:
+
+Paknezhad, M., Rengarajan, H., Yuan, C., Suresh, S., Gupta, M., Ramasamy, S., Lee H. K., PaRT: Parallel Learning Towards Robust and Transparent AI, 	arXiv:2201.09534 (2022)
+
 
 
 
