@@ -1,3 +1,6 @@
+'''
+Copyright (c) Mahsa Paknezhad, 2021
+'''
 from net_utils import get_network
 import torch
 import os

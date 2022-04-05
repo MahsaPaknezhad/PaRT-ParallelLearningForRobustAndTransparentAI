@@ -1,3 +1,7 @@
+'''
+Copyright (c) Mahsa Paknezhad, 2021
+'''
+
 from cifar_net import cifar_net
 import torch
 import os

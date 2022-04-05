@@ -1,3 +1,7 @@
+'''
+Copyright (c) Mahsa Paknezhad, 2021
+'''
+
 import os
 import torch
 from utils import Bar, Logger, AverageMeter, accuracy
@@ -27,6 +31,7 @@ class Learner():
         print('num of batches per task : ', self.num_batches)
         self.n_batches = min(50, min(self.num_batches))
 
+        # set modules specified in path to be trainable and freeze the rest of the modules
         if (self.args["arch"] in  ["resnet50", "resnet18"] ):
             params_set = [self.model.convs1,  self.model.bns1, self.model.layers1, self.model.layers2, self.model.layers3, self.model.layers4]
         for k in range(len(self.sessions)):
@@ -47,8 +52,6 @@ class Learner():
             t_params.append(p)
             print("Number of layers being trained : ", len(t_params))
             self.trainable_params.append(t_params)
-            #         self.optimizer = optim.Adadelta(trainable_params)
-            #         self.optimizer = optim.SGD(trainable_params, lr=self.args["lr"], momentum=0.96, weight_decay=0)
             optimizer = optim.Adam(t_params, lr=self.args["lr"], betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)
             self.optimizers.append(optimizer)
         self.loggers = []
@@ -61,7 +64,7 @@ class Learner():
 
 
     def learn(self):
-
+        # trains and tests the base network on the specified tasks
 
         for epoch in range(self.args["start_epoch"], self.args["num_epochs"]):
             self.adjust_learning_rate(epoch)
@@ -87,7 +90,7 @@ class Learner():
 
 
     def train(self):
-        # switch to train mode
+        # trains the base network on each task in parallel. Each task will be trained on its assigned sequence of modules (define as path)
         self.model.train()
         more_data = True
         num_read_batches = [0] * len(self.sessions)
@@ -96,7 +99,6 @@ class Learner():
             more_data = False
             np.random.shuffle(self.sessions)
             n = max([min(self.n_batches, self.num_batches[k] - num_read_batches[k]) for k in self.sessions])
-            #print(num_read_batches)
             if n > 0:
                 more_data = True
                 for k in self.sessions:
@@ -128,11 +130,12 @@ class Learner():
                         break
 
     def measure_train_accuracy(self):
+        # measures the train accuracy of the base network on each task
+
         self.losses = [AverageMeter() for i in self.sessions]
         self.top1 = [AverageMeter() for i in self.sessions]
         self.top5 = [AverageMeter() for i in self.sessions]
 
-        # switch to evaluate mode
         self.model.eval()
         #print('Test session:', self.sessions[k])
         self.sessions = list(range(self.args["num_tasks"]))
@@ -150,8 +153,6 @@ class Learner():
                 loss = F.cross_entropy(pre_ce, tar_ce)
 
                 # measure accuracy and record loss
-                #print('session', k)
-                #print('%d %d'%(self.logits_init_inds[k], self.logits_init_inds[k] + self.class_per_tasks[k]))
                 prec1, prec5 = accuracy(outputs.data[:, self.logits_init_inds[k]:self.logits_init_inds[k] + self.class_per_tasks[k]], targets.data, topk=(1, 5))
 
                 self.losses[k].update(loss.item(), inputs.size(0))
@@ -159,11 +160,9 @@ class Learner():
                 self.top5[k].update(prec5.item(), inputs.size(0))
     
     def test(self, epoch):
-
-        # switch to evaluate mode
+        # measures the validation accuracy of the base network on each task using the assigned sequence of modules (path) to the task
         self.model.eval()
 
-        #print('Test session:', self.sessions[k])
         self.sessions = list(range(self.args["num_tasks"]))
         for k in self.sessions:
             losses = AverageMeter()
@@ -184,8 +183,6 @@ class Learner():
                 loss = F.cross_entropy(pre_ce, tar_ce)
 
                 # measure accuracy and record loss
-                #print('session', k)
-                #print('%d %d'%(self.logits_init_inds[k], self.logits_init_inds[k] + self.class_per_tasks[k]))
                 prec1, prec5 = accuracy(outputs.data[:, self.logits_init_inds[k]:self.logits_init_inds[k] + self.class_per_tasks[k]], targets.data, topk=(1, 5))
 
                 losses.update(loss.item(), inputs.size(0))
@@ -196,13 +193,14 @@ class Learner():
             print('epoch: %d task: %d val loss: %0.03f  val acc: %0.03f losses size: %d top1 size: %d' % (
                 epoch, k, losses.avg, top1.avg, losses.count, top1.count))
 
-        #self.test_loss= losses.avg;self.test_acc= top1.avg
 
     def save_checkpoint(self,state, checkpoint='checkpoint', filename='checkpoint.pth.tar',epoch=0, test_case=0):
+        # save the current base network
         torch.save(state, os.path.join(checkpoint, 'model_'+str(test_case)+'_epoch_' + str(epoch)+'.pth.tar'))
 
 
     def adjust_learning_rate(self, epoch):
+        # update the learning rate of the optimizer
         if epoch in self.args["schedule"]:
             self.args['lr'] *= self.args["gamma"]
             for i in range(len(self.optimizers)):
@@ -212,7 +210,7 @@ class Learner():
 
 
     def get_confusion_matrix(self, k):
-        
+        # build the confusion matrix for the task k
         confusion_matrix = torch.zeros(self.class_per_tasks[k], self.class_per_tasks[k])
         with torch.no_grad():
             for i, (inputs, targets) in enumerate(self.testloaders[k]):

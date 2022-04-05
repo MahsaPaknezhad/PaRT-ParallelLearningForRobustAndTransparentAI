@@ -1,3 +1,6 @@
+'''
+Copyright (c) Mahsa Paknezhad, 2021
+'''
 import os
 import torch
 from utils import Bar, Logger, AverageMeter, accuracy, mkdir_p, savefig
@@ -33,6 +36,8 @@ class Learner():
         print(self.num_batches)
         self.trainable_params = []
         self.optimizers = []
+
+        # set modules specified in path to be trainable and freeze the rest of the modules
         params_set = [self.model.conv1, self.model.conv2, self.model.conv3, self.model.conv4, self.model.conv5,
                       self.model.conv6, self.model.conv7, self.model.conv8, self.model.conv9]
         for k in range(len(self.sessions)):
@@ -56,6 +61,7 @@ class Learner():
             self.optimizers.append(optimizer)
 
     def learn(self):
+        # trains and tests the base network on the specified tasks
         logger = Logger(os.path.join(self.args['checkpoint'],
                                      '_' + str(self.args['test_case']) + '_log.txt'), title=self.title)
         logger.set_names(['Epoch', 'Learning Rate', 'Train Loss', 'Valid Loss', 'Train Acc.', 'Valid Acc.'])
@@ -84,7 +90,7 @@ class Learner():
         savefig(os.path.join(self.args['checkpoint'], 'log_' + str(self.args['test_case']) + '.eps'))
 
     def train(self, epoch):
-        # switch to train mode
+        # trains the base network on each task in parallel. Each task will be trained on its assigned sequence of modules (define as path)
         self.model.train()
         losses = AverageMeter()
         top1 = AverageMeter()
@@ -151,7 +157,7 @@ class Learner():
         self.train_loss, self.train_acc = losses.avg, top1.avg
 
     def test(self, epoch):
-
+        # measures the teest accuracy of the base network on each task using the assigned sequence of modules (path) to the task
         losses = AverageMeter()
         top1 = AverageMeter()
         top5 = AverageMeter()
@@ -205,9 +211,11 @@ class Learner():
         self.test_acc = top1.avg
 
     def save_checkpoint(self, state, checkpoint='checkpoint', filename='checkpoint.pth.tar', epoch=0, test_case=0):
+        # save the current base network
         torch.save(state, os.path.join(checkpoint, 'model_' + str(test_case) + '_epoch_' + str(epoch) + '.pth.tar'))
 
     def adjust_learning_rate(self, epoch):
+        # update the learning rate of the optimizer
         if epoch in self.args['schedule']:
             self.args['lr'] *= self.args['gamma']
             for i in range(len(self.optimizers)):
@@ -215,7 +223,7 @@ class Learner():
                     param_group['lr'] = self.args['lr']
 
     def get_confusion_matrix(self, k):
-
+        # build the confusion matrix for the task k
         confusion_matrix = torch.zeros(self.class_per_tasks[k], self.class_per_tasks[k])
         with torch.no_grad():
             for i, (inputs, targets) in enumerate(self.testloaders[k]):
@@ -234,6 +242,7 @@ class Learner():
         return confusion_matrix
 
     def map_labels(self, targets, k):
+        # map the randomly selected labels from the CIFAR10/CIFAR100 dataset to a continuous seq of labels
         for n, i in enumerate(self.alllabels[k]):
             targets[targets == i] = self.mapped_labels[k][n]
         return targets

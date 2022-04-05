@@ -1,3 +1,7 @@
+'''
+Copyright (c) Mahsa Paknezhad, 2021
+'''
+
 import os
 from tqdm import tqdm
 import torch
@@ -31,6 +35,7 @@ class Learner():
             params_set = [self.model.convs1, self.model.bns1, self.model.layers1, self.model.layers2,
                           self.model.layers3, self.model.layers4]
 
+        # set modules specified in path to be trainable and freeze the rest of the modules
         for j, params in enumerate(params_set):
             if j > 0:
                 j -= 1
@@ -48,15 +53,11 @@ class Learner():
         trainable_params.append(p)
         print("Number of layers being trained : " , len(trainable_params))
 
-#         self.optimizer = optim.Adadelta(trainable_params)
-#         self.optimizer = optim.SGD(trainable_params, lr=self.args['lr'], momentum=0.96, weight_decay=0)
         self.optimizer = optim.SGD(trainable_params, lr=self.args['lr'], weight_decay=0.0, momentum=0.9,
                                    nesterov=True)
-        
-
-
 
     def learn(self):
+        # trains and tests the base network on the input task
         if self.args['resume']:
             # Load checkpoint.
             print('==> Resuming from checkpoint..')
@@ -100,7 +101,7 @@ class Learner():
 
 
     def train(self, epoch, path):
-        # switch to train mode
+        # trains the base network on the input task using the assinged seq of modules (path) to the task
         self.model.train()
 
         batch_time = AverageMeter()
@@ -159,7 +160,7 @@ class Learner():
    
     
     def test(self, epoch, path):
-
+        # measure test accuracy of the base network on the input task using the assigned sequence of modules (path) to the task
         batch_time = AverageMeter()
         data_time = AverageMeter()
         losses = AverageMeter()
@@ -212,16 +213,18 @@ class Learner():
         self.test_loss= losses.avg;self.test_acc= top1.avg
 
     def save_checkpoint(self,state, checkpoint='checkpoint', filename='checkpoint.pth.tar',task_num=0, test_case=0):
+        # save the current base network
         torch.save(state, os.path.join(checkpoint, 'session_'+str(task_num)+'_'+str(test_case)+'_model.pth.tar'))
 
     def adjust_learning_rate(self, epoch):
+        # update the learning rate of the optimizer
         if epoch in self.args['schedule']:
             self.state['lr'] *= self.args['gamma']
             for param_group in self.optimizer.param_groups:
                 param_group['lr'] = self.args['lr']
 
     def get_confusion_matrix(self, path):
-
+        # build the confusion matrix for the input task
         confusion_matrix = torch.zeros(self.class_per_task, self.class_per_task)
         with torch.no_grad():
             for i, (inputs, targets) in enumerate(self.testloader):

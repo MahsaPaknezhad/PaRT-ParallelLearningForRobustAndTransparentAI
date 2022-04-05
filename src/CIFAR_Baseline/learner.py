@@ -1,3 +1,7 @@
+'''
+Copyright (c) Mahsa Paknezhad, 2021
+'''
+
 import os
 from tqdm import tqdm
 import torch
@@ -28,7 +32,8 @@ class Learner():
         self.logit_init_ind = logit_init_ind
 
         trainable_params = []
-        
+
+        # set modules specified in path to be trainable and freeze the rest of the modules
         params_set = [self.model.conv1, self.model.conv2, self.model.conv3, self.model.conv4, self.model.conv5, self.model.conv6, self.model.conv7, self.model.conv8, self.model.conv9]
         for j, params in enumerate(params_set): 
             for i, param in enumerate(params):
@@ -45,6 +50,7 @@ class Learner():
         self.optimizer = optim.Adam(trainable_params, lr=self.args['lr'], betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)
 
     def learn(self):
+        # trains and tests the base network on the input task
         if self.args['resume']:
             # Load checkpoint.
             print('==> Resuming from checkpoint..')
@@ -87,7 +93,7 @@ class Learner():
 
 
     def train(self, path):
-        # switch to train mode
+        # trains the base network on the input task using the assinged seq of modules (path) to the task
         self.model.train()
 
         batch_time = AverageMeter()
@@ -151,7 +157,7 @@ class Learner():
    
     
     def test(self, path):
-
+        # measure test accuracy of the base network on the input task using the assigned sequence of modules (path) to the task
         batch_time = AverageMeter()
         data_time = AverageMeter()
         losses = AverageMeter()
@@ -208,16 +214,18 @@ class Learner():
         self.test_loss= losses.avg;self.test_acc= top1.avg
 
     def save_checkpoint(self,state, checkpoint='checkpoint', filename='checkpoint.pth.tar',session=0, test_case=0):
+        # save the current base network
         torch.save(state, os.path.join(checkpoint, 'task_'+str(session)+'_'+str(test_case)+'_model.pth.tar'))
 
     def adjust_learning_rate(self, epoch):
+        # update the learning rate of the optimizer
         if epoch in self.args['schedule']:
             self.args['lr'] *= self.args['gamma']
             for param_group in self.optimizer.param_groups:
                 param_group['lr'] = self.args['lr']
 
     def get_confusion_matrix(self, path):
-
+        # build the confusion matrix for the input task
         confusion_matrix = torch.zeros(self.class_per_task, self.class_per_task)
         with torch.no_grad():
             for i, (inputs, targets) in enumerate(self.testloader):
@@ -236,6 +244,7 @@ class Learner():
         return confusion_matrix
 
     def map_labels(self, targets):
+        # map the randomly selected labels from the CIFAR10/CIFAR100 dataset to a continuous seq of labels
         for n, i in enumerate(self.labels):
             targets[targets==i] = self.mapped_labels[n]
         return targets

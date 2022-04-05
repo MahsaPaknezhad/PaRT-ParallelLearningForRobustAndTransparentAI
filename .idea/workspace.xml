@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="b0748c85-a225-46b2-a6bf-3cc1145a9107" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/src/5Tasks_Baseline/5tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/5Tasks_Baseline/5tasks.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/5Tasks_Baseline/generate_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/5Tasks_Baseline/generate_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/5Tasks_Baseline/generate_path.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/5Tasks_Baseline/generate_path.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/5Tasks_Baseline/learner.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/5Tasks_Baseline/learner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/5Tasks_Parallel/5tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/5Tasks_Parallel/5tasks.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/5Tasks_Parallel/fine_grained_dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/5Tasks_Parallel/fine_grained_dataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/5Tasks_Parallel/generate_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/5Tasks_Parallel/generate_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/5Tasks_Parallel/generate_path.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/5Tasks_Parallel/generate_path.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/5Tasks_Parallel/learner.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/5Tasks_Parallel/learner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CIFAR_Baseline/cifar.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/CIFAR_Baseline/cifar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CIFAR_Baseline/cifar_dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/CIFAR_Baseline/cifar_dataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CIFAR_Baseline/generate_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/CIFAR_Baseline/generate_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CIFAR_Baseline/generate_path.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/CIFAR_Baseline/generate_path.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CIFAR_Baseline/learner.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/CIFAR_Baseline/learner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CIFAR_Parallel/cifar.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/CIFAR_Parallel/cifar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CIFAR_Parallel/cifar_dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/CIFAR_Parallel/cifar_dataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CIFAR_Parallel/generate_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/CIFAR_Parallel/generate_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CIFAR_Parallel/generate_path.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/CIFAR_Parallel/generate_path.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CIFAR_Parallel/learner.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/CIFAR_Parallel/learner.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="27Mx82LuB9kBH05xnl5Yeiv7E0o" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b0748c85-a225-46b2-a6bf-3cc1145a9107" name="Changes" comment="" />
+      <created>1649143593938</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1649143593938</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/5Tasks_Parallel/5tasks.py</url>
+          <line>3</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

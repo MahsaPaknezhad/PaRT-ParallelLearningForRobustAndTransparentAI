@@ -1,5 +1,8 @@
-from __future__ import print_function
+'''
+Copyright (c) Mahsa Paknezhad, 2021
+'''
 
+from __future__ import print_function
 import time
 import pickle
 import torch.nn.parallel
@@ -42,6 +45,7 @@ def main(args):
         else:
             device = 'cpu'
 
+        # Create an object of the base network
         model = cifar_net(args)
         model.load_state_dict(torch.load(os.path.join(args['inputfiles'], 'init_model_new_%s.pth.tar' % str(args['test_case'])),
                                          map_location=torch.device(device)))
@@ -56,6 +60,7 @@ def main(args):
         with open(os.path.join(args["checkpoint"], "setting.json"), 'w') as json_file:
             json.dump(args, json_file, indent=4, sort_keys=True)
 
+        # Specify the transformation functions for tasks defined on CIFAR10 and CIFAR100 datasets
         cifar10_transform_train = transforms.Compose([
             transforms.RandomCrop(32, padding=4),
             transforms.RandomHorizontalFlip(),
@@ -84,6 +89,7 @@ def main(args):
 
         inds_all_sessions = pickle.load(open(os.path.join(args['inputfiles'], args['labels_data']), 'rb'))
 
+        # load the assigned path (sequence of modules) to the input task
         path = np.load(args['inputfiles'] + "/path_new_" + str(args['task_num']) + "_" + str(args['test_case']) + ".npy")
         train_path = path.copy()
         infer_path = path.copy()
@@ -94,6 +100,7 @@ def main(args):
         print("path\n", path)
         print("train_path\n", train_path)
 
+        # load the tasks. This includes the class labels and the index of the images in the dataset for each task
         logit_init_ind = 0
         for i in range(args['task_num']):
             this_session = inds_all_sessions[i]
@@ -110,6 +117,7 @@ def main(args):
         else:
             args['dataset'] = 'cifar100'
 
+        # generate the train and test dataloaders for each task using the index of images assigned to the task
         if args['dataset'] == 'cifar100':
 
             dataloader = CIFAR100
@@ -130,6 +138,8 @@ def main(args):
                                testloader=testloader, labels=labels, class_per_task=class_per_task,
                                logit_init_ind=logit_init_ind, use_cuda=args['use_cuda'], path=path,
                                train_path=train_path, infer_path=infer_path)
+
+        # train the base network from scratch on the input task
         main_learner.learn()
 
         cfmat = main_learner.get_confusion_matrix(infer_path)

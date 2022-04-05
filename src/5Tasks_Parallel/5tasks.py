@@ -26,12 +26,14 @@ def main(args):
     if args["use_cuda"]:
         torch.cuda.manual_seed_all(seed)
 
+    # Create an object of the base network
     model = get_network(args)
     model.load_state_dict(torch.load(os.path.join(args["inputfiles"], 'init_model_new_%s.pth.tar' % str(args["test_case"]))))
     model.train()
     if args["use_cuda"]:
         model = model.cuda()
 
+     # initiate the base network with weights and biases of a pretrained ResNet model trained for ImageNet classification
     if args["use_imagenet_pretrained"]:
         if args["arch"] == 'resnet50' or args["arch"] == 'resnet18':
             state_dict = torch.load(os.path.join(args["modelfile"],args["arch"]+'.pth'))
@@ -74,6 +76,7 @@ def main(args):
 
     sessions = list(range(args["num_tasks"]))
 
+    # load the assigned paths (sequence of modules) to the tasks (or ses here)
     train_paths = []
     for ses in sessions:
         path = np.load(args["inputfiles"] + "/path_new_" + str(ses) + "_" + str(args["test_case"]) + ".npy")
@@ -89,6 +92,7 @@ def main(args):
     class_per_tasks = []
     logit_init_ind = 0
 
+    # generate the train and validation dataloaders for each task
     for ses in sessions:
         cur_dataset = args["datasets"][ses]
         if 'cropped' in cur_dataset:
@@ -108,6 +112,8 @@ def main(args):
     main_learner = Learner(model=model, args=args, sessions=sessions, trainloaders=trainloaders,
                            testloaders=testloaders, class_per_tasks=class_per_tasks, logit_init_inds=logit_init_inds,
                            use_cuda=args["use_cuda"], train_paths=train_paths)
+
+    # train the base network on the defined tasks in parallel
     main_learner.learn()
 
     for ses in sessions:

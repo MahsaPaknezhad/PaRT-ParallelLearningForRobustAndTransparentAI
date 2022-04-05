@@ -11,7 +11,6 @@ else:
 
 import torch.utils.data as data
 from torchvision.datasets.utils import download_url, check_integrity
-import pdb
 
 class CIFAR10(data.Dataset):
     """`CIFAR10 <https://www.cs.toronto.edu/~kriz/cifar.html>`_ Dataset.
@@ -91,7 +90,6 @@ class CIFAR10(data.Dataset):
 
         self.data = np.vstack(self.data).reshape(-1, 3, 32, 32)
         self.data = self.data.transpose((0, 2, 3, 1))  # convert to HWC
-#        pdb.set_trace()
         self.data =self.data[ind,]
         self.targets=np.array(self.targets)[ind,].tolist()
 

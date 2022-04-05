@@ -11,7 +11,6 @@ else:
 
 import torch.utils.data as data
 from torchvision.datasets.utils import download_url, check_integrity
-import pdb
 
 class CIFAR10(data.Dataset):
     """`CIFAR10 <https://www.cs.toronto.edu/~kriz/cifar.html>`_ Dataset.
@@ -149,7 +148,6 @@ class CIFAR10(data.Dataset):
         import tarfile
 
         if self._check_integrity():
-            #print('Files already downloaded and verified')
             return
 
         download_url(self.url, self.root, self.filename, self.tgz_md5)

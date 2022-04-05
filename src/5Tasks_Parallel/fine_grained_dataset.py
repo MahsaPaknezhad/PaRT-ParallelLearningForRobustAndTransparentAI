@@ -46,9 +46,6 @@ def train_loader(path, train_batch_size, num_workers=24, pin_memory=False, norma
     train_transform.transforms.append(Cutout(16))
 
     train_dataset = datasets.ImageFolder(path, train_transform)
-    '''train_dataset.samples = train_dataset.samples[:5000]
-    train_dataset.imgs = train_dataset.imgs[:5000]
-    train_dataset.targets = train_dataset.targets[:5000]'''
 
     return torch.utils.data.DataLoader(train_dataset,
         batch_size=train_batch_size, shuffle=True, sampler=None,
@@ -68,9 +65,6 @@ def val_loader(path, val_batch_size, num_workers=24, pin_memory=False, normalize
                                  transforms.ToTensor(),
                                  normalize,
                              ]))
-    '''val_dataset.samples = val_dataset.samples[:4000]
-    val_dataset.imgs = val_dataset.imgs[:4000]
-    val_dataset.targets = val_dataset.targets[:4000]'''
 
     return torch.utils.data.DataLoader(val_dataset,
         batch_size=val_batch_size, shuffle=False, sampler=None,
@@ -91,9 +85,6 @@ def train_loader_cropped(path, train_batch_size, num_workers=24, pin_memory=Fals
     train_transform.transforms.append(Cutout(16))
 
     train_dataset = datasets.ImageFolder(path, train_transform)
-    '''train_dataset.samples = train_dataset.samples[:5000]
-    train_dataset.imgs = train_dataset.imgs[:5000]
-    train_dataset.targets = train_dataset.targets[:5000]'''
 
     return torch.utils.data.DataLoader(train_dataset,
         batch_size=train_batch_size, shuffle=True, sampler=None,
@@ -112,9 +103,6 @@ def val_loader_cropped(path, val_batch_size, num_workers=24, pin_memory=False):
                                  normalize,
                              ]))
 
-    '''val_dataset.samples = val_dataset.samples[:4000]
-    val_dataset.imgs = val_dataset.imgs[:4000]
-    val_dataset.targets = val_dataset.targets[:4000]'''
 
     return torch.utils.data.DataLoader(val_dataset,
         batch_size=val_batch_size, shuffle=False, sampler=None,

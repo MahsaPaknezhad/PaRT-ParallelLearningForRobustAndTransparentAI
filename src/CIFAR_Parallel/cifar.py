@@ -1,3 +1,7 @@
+'''
+Copyright (c) Mahsa Paknezhad, 2021
+'''
+
 from __future__ import print_function
 import time
 import pickle
@@ -34,6 +38,7 @@ def main(args):
     else:
         device = 'cpu'
 
+    # Create an object of the base network
     model = cifar_net(args)
     model.load_state_dict(torch.load(os.path.join(args['inputfiles'], 'init_model_new_%s.pth.tar' % str(args['test_case'])),
                                      map_location=torch.device(device)))
@@ -46,6 +51,7 @@ def main(args):
 
     args['savepoint'] = args['checkpoint']
 
+    # Specify the transformation functions for tasks defined on CIFAR10 and CIFAR100 datasets
     cifar10_transform_train = transforms.Compose([
         transforms.RandomCrop(32, padding=4),
         transforms.RandomHorizontalFlip(),
@@ -76,6 +82,7 @@ def main(args):
 
     inds_all_sessions = pickle.load(open(os.path.join(args['inputfiles'], args['labels_data']), 'rb'))
 
+    # load the assigned path (sequence of modules) to the tasks (or ses here)
     train_paths = []
     for ses in sessions:
         path = np.load(args['inputfiles'] + "/path_new_" + str(ses) + "_" + str(args['test_case']) + ".npy")
@@ -93,6 +100,7 @@ def main(args):
     logit_init_ind = 0
     args['dataset']=[]
 
+    # load the tasks. This includes the class labels and the index of the images in the dataset for each task
     for ses in sessions:
         ind_this_session = inds_all_sessions[ses]
         labels = ind_this_session['labels'][0]
@@ -107,6 +115,7 @@ def main(args):
         else:
             args['dataset'].append('cifar100')
 
+        # generate the train and test dataloaders for each task using the index of images assigned to the task
         if args['dataset'][-1] == 'cifar100':
 
             dataloader = CIFAR100
@@ -130,6 +139,8 @@ def main(args):
     main_learner = Learner(model=model, args=args, sessions=sessions, trainloaders=trainloaders,
                            testloaders=testloaders, labels=alllabels, class_per_tasks=class_per_tasks, logit_init_inds= logit_init_inds,
                            use_cuda=args['use_cuda'], train_paths=train_paths)
+
+    # train the base network on the defined tasks in parallel
     main_learner.learn()
 
     for ses in sessions:

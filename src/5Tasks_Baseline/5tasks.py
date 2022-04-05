@@ -1,5 +1,8 @@
-from __future__ import print_function
+'''
+Copyright (c) Mahsa Paknezhad, 2021
+'''
 
+from __future__ import print_function
 import json
 import time
 import torch.nn.parallel
@@ -30,6 +33,7 @@ def main(args):
         if args['use_cuda']:
             torch.cuda.manual_seed_all(seed)
 
+        # Create an object of the base network
         model = get_network(args)
         print('model is generated')
         loaded_checkpoint = torch.load(os.path.join(args['inputfiles'], 'init_model_new_%s.pth.tar' % str(args['test_case'])))
@@ -40,6 +44,7 @@ def main(args):
         if args['use_cuda']:
             model = model.cuda()
 
+        # initiate the base network with weights and biases of a pretrained ResNet model trained for ImageNet classification
         if args['use_imagenet_pretrained']:
             if args['arch'] == 'resnet50' or args['arch'] == 'resnet18':
                 state_dict = torch.load(os.path.join(args['modelfile'], args['arch'] + '.pth'))
@@ -83,6 +88,7 @@ def main(args):
         with open(os.path.join(args["checkpoint"], "setting.json"), 'w') as json_file:
             json.dump(args, json_file, indent=4, sort_keys=True)
 
+        # load the assigned path (sequence of modules) to the input task
         path = np.load(args['inputfiles'] + "/path_new_" + str(task_num) + "_" + str(args['test_case']) + ".npy")
         train_path = path.copy()
         infer_path = path.copy()
@@ -93,6 +99,7 @@ def main(args):
         print("path\n", path)
         print("train_path\n", train_path)
 
+        # generate the train and validation dataloaders for the input task
         cur_dataset = args['datasets'][task_num]
         if 'cropped' in cur_dataset:
             train_loader = dataset.train_loader_cropped(os.path.join(args['datasets_dir'], cur_dataset, 'train'),
@@ -113,6 +120,8 @@ def main(args):
                                testloader=val_loader,  class_per_task=class_per_task,
                                logit_init_ind=logit_init_ind, use_cuda=args['use_cuda'], path=path,
                                train_path=train_path, infer_path=infer_path)
+
+        # train the base network from scratch on the input task
         main_learner.learn()
 
         cfmat = main_learner.get_confusion_matrix(infer_path)
