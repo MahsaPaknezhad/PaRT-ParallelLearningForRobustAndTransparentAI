@@ -30,7 +30,7 @@ def main(args):
         print(str(path).replace('.', ','))
         np.save(args['inputfiles']%args['dataset'] + "/path_new_" + str(ses) + "_" + str(args['test_case']) + ".npy", path)
 
-json_file = '../../scripts/test_case0_cifar10_100_baseline.json'
+json_file = '../../scripts/test_case0_cifar100_baseline.json'
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--json_file', default=json_file, type=str, help='input json file')

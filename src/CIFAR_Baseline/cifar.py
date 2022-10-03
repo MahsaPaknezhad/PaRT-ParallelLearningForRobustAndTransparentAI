@@ -25,9 +25,11 @@ def main(args):
     checkpoint = args['checkpoint']
     labels_data = args['labels_data']
     dataset = args['dataset']
+    lr = args['lr']
     for task_num in range(int(args["num_tasks"])):
         args['task_num'] = task_num
         seed = args['seeds'][args['test_case']]
+        args['lr'] = lr
         print('seed', seed)
         random.seed(seed)
         torch.manual_seed(seed)
@@ -155,7 +157,7 @@ def main(args):
 
 
 
-json_file = '../../scripts/test_case0_cifar10_100_baseline.json'
+json_file = '../../scripts/test_case0_cifar100_baseline.json'
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--json_file', default=json_file, type=str, help='input json file')

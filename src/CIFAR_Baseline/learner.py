@@ -74,8 +74,8 @@ class Learner():
             self.adjust_learning_rate(epoch)
 
             print('\nEpoch: [%d | %d] LR: %f Task: %d' % (epoch + 1, self.args['epochs'], self.args['lr'],self.args['task_num']))
-            self.train(self.infer_path)
-            self.test(self.infer_path)
+            #self.train(self.infer_path)
+            #self.test(self.infer_path)
             # append logger file
             logger.append([self.args['task_num'], epoch, self.args['lr'], self.train_loss, self.test_loss, self.train_acc, self.test_acc])
 

@@ -26,7 +26,7 @@ def main(args):
     torch.save(model.state_dict(), os.path.join(args['inputfiles']%args['dataset'], 'init_model_new_' + str(args['test_case']) + '.pth.tar'))
 
 
-json_file = '../../scripts/test_case0_cifar10_100_baseline.json'
+json_file = '../../scripts/test_case0_cifar100_baseline.json'
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--json_file', default=json_file, type=str, help='input json file')
