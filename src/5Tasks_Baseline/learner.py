@@ -219,7 +219,7 @@ class Learner():
     def adjust_learning_rate(self, epoch):
         # update the learning rate of the optimizer
         if epoch in self.args['schedule']:
-            self.state['lr'] *= self.args['gamma']
+            self.args['lr'] *= self.args['gamma']
             for param_group in self.optimizer.param_groups:
                 param_group['lr'] = self.args['lr']
 

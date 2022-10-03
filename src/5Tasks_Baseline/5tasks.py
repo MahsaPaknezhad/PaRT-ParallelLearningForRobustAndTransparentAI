@@ -23,9 +23,11 @@ import fine_grained_dataset as dataset
 def main(args):
     checkpoint = args['checkpoint']
     args['inputfiles'] = args['inputfiles']%args['dataset']
+    lr = args['lr']
     for task_num in range(int(args["num_tasks"])):
         args['task_num'] = task_num
         args['checkpoint'] = checkpoint%(args['dataset'],int(args['test_case']))
+        args['lr'] = lr
         seed = args['seeds'][args['test_case']]
         print('seed', seed)
         random.seed(seed)
